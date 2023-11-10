@@ -1,11 +1,16 @@
 import { Component } from 'react';
-import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
 import { Searchbar } from './Searchbar/Searchbar';
+import { fetchImages } from './ApiService/ApiService';
+import { ImageGallery } from './ImageGallery/ImageGallery';
+import { Button } from './Button/Button';
 
 export class App extends Component {
   state = {
     searchQuery: '',
-    // loading: false,
+    images: [],
+    page: 1,
+    isLoading: false,
   };
 
   handleFormSubmit = searchQuery => {
@@ -13,29 +18,54 @@ export class App extends Component {
     this.setState({ searchQuery });
   };
 
-  // async componentDidMount() {
-  //   this.setState({ loading: true });
+  async componentDidMount() {
+    // try {
+    //   const initialImages = await fetchImages(
+    //     this.state.searchQuery,
+    //     this.state.page
+    //   );
+    //   this.setState({ images: initialImages });
+    // } catch (error) {
+    //   console.log(error);
+    // }
+  }
 
-  //   axios({
-  //     method: 'get',
-  //     url: `https://pixabay.com/api/?q=cat&page=1&key=39745378-dd24554a2bcf90950765bc548&image_type=photo&orientation=horizontal&per_page=12`,
-  //   })
-  //     .then(response => response.data)
-  //     .then(apiArray => apiArray.hits)
-  //     .then(oneImage => oneImage[0])
-  //     .then(images => {
-  //       console.log(images);
-  //       return this.setState({ images });
-  //     })
-  //     .finally(() => this.setState({ loading: false }));
-  // }
+  async componentDidUpdate(prevProps, prevState) {
+    if (
+      this.state.page !== prevState.page ||
+      this.state.searchQuery !== prevState.searchQuery
+    ) {
+      try {
+        const initialImages = await fetchImages(
+          this.state.searchQuery,
+          this.state.page
+        );
+        this.setState({ images: initialImages });
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }
+
+  nextPage = newPage => {
+    this.setState(prevState => {
+      console.log(newPage);
+      console.log('prev page:', prevState);
+      console.log(this.state.page);
+      return {
+        page: prevState.page + 1,
+      };
+    });
+    this.setState();
+  };
 
   render() {
     return (
       <div>
         <Searchbar onSubmit={this.handleFormSubmit} />
-        {/* {this.state.loading && <h2>Загрузка...</h2>}
-        {this.state.images && <div>{this.state.images.previewURL}</div>} */}
+        <ToastContainer autoClose={3000} position="top-center" />
+        <ImageGallery imagesArray={this.state.images} />
+        <Button nextPage={this.nextPage} />
       </div>
     );
   }

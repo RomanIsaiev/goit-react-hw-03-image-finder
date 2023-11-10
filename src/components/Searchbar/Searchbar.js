@@ -1,5 +1,7 @@
 import { Component } from 'react';
 import { BiSearchAlt2 } from 'react-icons/bi';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export class Searchbar extends Component {
   state = {
@@ -14,7 +16,7 @@ export class Searchbar extends Component {
     event.preventDefault();
 
     if (this.state.searchQuery.trim() === '') {
-      alert('The field must not be empty');
+      toast.warn('The field must not be empty');
       return;
     }
 
