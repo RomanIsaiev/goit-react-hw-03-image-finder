@@ -18,42 +18,28 @@ export class App extends Component {
     this.setState({ searchQuery });
   };
 
-  componentDidMount() {
-    // if (this.state.images.length !== 0) {
-    //   this.setState(prevState => {
-    //     return {
-    //       images: [...(prevState.images + this.state.images)],
-    //     };
-    //   });
-    // }
-  }
+  componentDidMount() {}
 
   async componentDidUpdate(prevProps, prevState) {
-    console.log(prevProps);
-    console.log(prevState);
+    console.log(this.state.images);
     if (
       this.state.page !== prevState.page ||
       this.state.searchQuery !== prevState.searchQuery
     ) {
-      try {
-        const initialImages = await fetchImages(
-          this.state.searchQuery,
-          this.state.page
-        );
-        this.setState({ images: initialImages });
-      } catch (error) {
-        console.log(error);
-      }
+      const { page } = this.state;
+
+      fetchImages(this.state.searchQuery, page).then(response => {
+        console.log('load more:', response);
+        this.setState(prevState => ({
+          images: [...prevState.images, ...response],
+          page: prevState.page,
+        }));
+      });
     }
   }
 
   nextPage = newPage => {
     this.setState(prevState => {
-      console.log(newPage);
-      console.log('prev page:', prevState);
-      console.log(this.state.page);
-      console.log(prevState.images);
-      console.log(this.state.images);
       return {
         page: prevState.page + 1,
       };

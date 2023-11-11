@@ -9,7 +9,7 @@ axios.defaults.baseURL = 'https://pixabay.com/api';
 //   return response.data.hits;
 // };
 
-export async function fetchImages(searchQuerry, currentPage = 1) {
+export async function fetchImages(searchQuerry, currentPage) {
   try {
     const response = await axios.get(
       `/?q=${searchQuerry}&page=${currentPage}&key=39745378-dd24554a2bcf90950765bc548&image_type=photo&orientation=horizontal&per_page=12`
