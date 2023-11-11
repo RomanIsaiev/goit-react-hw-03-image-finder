@@ -10,8 +10,9 @@ export async function fetchImages(searchQuerry, currentPage) {
       console.log('bad');
       return;
     }
-    return response.data.hits;
+    return response.data;
   } catch (error) {
     console.log('problem', error);
+    return;
   }
 }

@@ -10,6 +10,7 @@ export class App extends Component {
     searchQuery: '',
     images: [],
     page: 1,
+    loadMore: false,
     isLoading: false,
   };
 
@@ -20,31 +21,26 @@ export class App extends Component {
 
   componentDidMount() {}
 
-  async componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps, prevState) {
     const { page } = this.state;
 
     if (this.state.searchQuery !== prevState.searchQuery) {
       fetchImages(this.state.searchQuery, page).then(response => {
-        this.setState({ images: response });
+        this.setState({
+          images: response.hits,
+          loadMore: true,
+        });
       });
     } else if (this.state.page !== prevState.page) {
       fetchImages(this.state.searchQuery, page).then(response => {
         this.setState(prevState => ({
-          images: [...prevState.images, ...response],
+          images: [...prevState.images, ...response.hits],
         }));
+        if (this.state.page > Math.round(response.totalHits / 12)) {
+          this.setState({ loadMore: false });
+        }
       });
     }
-
-    // if (
-    //   this.state.page !== prevState.page ||
-    //   this.state.searchQuery !== prevState.searchQuery
-    // ) {
-    //   fetchImages(this.state.searchQuery, page).then(response => {
-    //     this.setState(prevState => ({
-    //       images: [...prevState.images, ...response],
-    //     }));
-    //   });
-    // }
   }
 
   nextPage = () => {
@@ -61,7 +57,7 @@ export class App extends Component {
         <Searchbar onSubmit={this.handleFormSubmit} />
         <ToastContainer autoClose={3000} position="top-center" />
         <ImageGallery imagesArray={this.state.images} />
-        {this.state.images.length > 0 && <Button nextPage={this.nextPage} />}
+        {this.state.loadMore && <Button nextPage={this.nextPage} />}
       </div>
     );
   }
