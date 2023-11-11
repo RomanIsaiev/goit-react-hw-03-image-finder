@@ -35,7 +35,6 @@ export class Searchbar extends Component {
       <HeaderSearchbar>
         <Form onSubmit={this.handleSearchQuerySubmit}>
           <SearchFormInput
-            className="input"
             type="text"
             autoComplete="off"
             autoFocus

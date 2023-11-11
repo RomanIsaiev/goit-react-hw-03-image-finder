@@ -28,6 +28,8 @@ export class App extends Component {
 
   async componentDidUpdate(prevProps, prevState) {
     const { page } = this.state;
+    console.log(this.state.page);
+    console.log(this.state.images);
 
     if (this.state.searchQuery !== prevState.searchQuery) {
       try {
@@ -35,7 +37,6 @@ export class App extends Component {
           images: [],
           isLoading: true,
           loadMore: false,
-          page: 1,
         });
         await fetchImages(this.state.searchQuery, page).then(response => {
           this.setState({
@@ -51,6 +52,7 @@ export class App extends Component {
     }
 
     if (this.state.page !== prevState.page) {
+      console.log('я тоже работаю', Date());
       try {
         this.setState({ isLoading: true });
         await fetchImages(this.state.searchQuery, page).then(response => {
