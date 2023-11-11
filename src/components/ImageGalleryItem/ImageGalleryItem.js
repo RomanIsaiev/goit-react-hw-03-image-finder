@@ -1,13 +1,6 @@
-// export const ImageGalleryItem = ({ data: { webformatURL, type, index } }) => {
-// return (
-//   <li className="gallery-item" key={index}>
-//     <img src={webformatURL} alt={type} />
-//   </li>
-// );
-// };
-
 import { Component } from 'react';
 import { ImageModal } from 'components/Modal/Modal';
+import { GalleryListItem, ImageListItem } from './ImageGalleryItem.styled';
 
 export class ImageGalleryItem extends Component {
   state = {
@@ -34,9 +27,13 @@ export class ImageGalleryItem extends Component {
 
     return (
       <div>
-        <li className="gallery-item" key={index} onClick={this.openModal}>
-          <img src={webformatURL} alt={type} />
-        </li>
+        <GalleryListItem
+          className="gallery-item"
+          key={index}
+          onClick={this.openModal}
+        >
+          <ImageListItem src={webformatURL} alt={type} />
+        </GalleryListItem>
         <ImageModal
           isOpen={isModalOpen}
           onClose={this.closeModal}

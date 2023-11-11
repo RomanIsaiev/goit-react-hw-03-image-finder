@@ -1,9 +1,15 @@
 import { Component } from 'react';
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
+import { RotatingLines } from 'react-loader-spinner';
 import { Searchbar } from './Searchbar/Searchbar';
 import { fetchImages } from './ApiService/ApiService';
 import { ImageGallery } from './ImageGallery/ImageGallery';
-import { Button } from './Button/Button';
+import { LoadMoreButton } from './LoadMoreButton/LoadMoreButton';
+import { GlobalStyle } from 'GlobalStyle';
+import { Layout } from './App.styled';
+import { LoaderContainer } from './Loader/LoaderWrapper.styled';
+
+import 'react-toastify/dist/ReactToastify.css';
 
 export class App extends Component {
   state = {
@@ -15,7 +21,6 @@ export class App extends Component {
   };
 
   handleFormSubmit = searchQuery => {
-    console.log(searchQuery);
     this.setState({ searchQuery });
   };
 
@@ -26,15 +31,20 @@ export class App extends Component {
 
     if (this.state.searchQuery !== prevState.searchQuery) {
       try {
-        this.setState({ isLoading: true });
-        fetchImages(this.state.searchQuery, page).then(response => {
+        this.setState({
+          images: [],
+          isLoading: true,
+          loadMore: false,
+          page: 1,
+        });
+        await fetchImages(this.state.searchQuery, page).then(response => {
           this.setState({
             images: response.hits,
             loadMore: true,
           });
         });
       } catch (error) {
-        console.log(error);
+        toast.error('Sorry, no pictures were found for this request');
       } finally {
         this.setState({ isLoading: false });
       }
@@ -43,7 +53,7 @@ export class App extends Component {
     if (this.state.page !== prevState.page) {
       try {
         this.setState({ isLoading: true });
-        fetchImages(this.state.searchQuery, page).then(response => {
+        await fetchImages(this.state.searchQuery, page).then(response => {
           this.setState(prevState => ({
             images: [...prevState.images, ...response.hits],
           }));
@@ -52,7 +62,7 @@ export class App extends Component {
           }
         });
       } catch (error) {
-        console.log(error);
+        toast.error('Error');
       } finally {
         this.setState({ isLoading: false });
       }
@@ -69,15 +79,26 @@ export class App extends Component {
 
   render() {
     return (
-      <div>
+      <Layout>
         <Searchbar onSubmit={this.handleFormSubmit} />
-        <ToastContainer autoClose={3000} position="top-center" />
         {this.state.images.length > 0 && (
           <ImageGallery imagesArray={this.state.images} />
         )}
-        {this.state.isLoading && <b>LOADING...</b>}
-        {this.state.loadMore && <Button nextPage={this.nextPage} />}
-      </div>
+        {this.state.isLoading && (
+          <LoaderContainer>
+            <RotatingLines
+              strokeColor="grey"
+              strokeWidth="5"
+              animationDuration="0.75"
+              width="96"
+              visible={true}
+            />
+          </LoaderContainer>
+        )}
+        {this.state.loadMore && <LoadMoreButton nextPage={this.nextPage} />}
+        <GlobalStyle />
+        <ToastContainer autoClose={3000} position="top-right" />
+      </Layout>
     );
   }
 }

@@ -2,6 +2,12 @@ import { Component } from 'react';
 import { BiSearchAlt2 } from 'react-icons/bi';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {
+  HeaderSearchbar,
+  Form,
+  SearchFormButton,
+  SearchFormInput,
+} from './Searchbar.styled';
 
 export class Searchbar extends Component {
   state = {
@@ -16,7 +22,7 @@ export class Searchbar extends Component {
     event.preventDefault();
 
     if (this.state.searchQuery.trim() === '') {
-      toast.warn('The field must not be empty');
+      toast.warn('This field must not be empty or must be changed');
       return;
     }
 
@@ -26,9 +32,9 @@ export class Searchbar extends Component {
 
   render() {
     return (
-      <header className="searchbar">
-        <form className="form" onSubmit={this.handleSearchQuerySubmit}>
-          <input
+      <HeaderSearchbar>
+        <Form onSubmit={this.handleSearchQuerySubmit}>
+          <SearchFormInput
             className="input"
             type="text"
             autoComplete="off"
@@ -37,14 +43,13 @@ export class Searchbar extends Component {
             onChange={this.handleSearchQueryChange}
           />
 
-          <button type="submit" className="button">
-            <span className="button-label">
-              <BiSearchAlt2 style={{ marginRight: 8 }} />
-              Search
+          <SearchFormButton type="submit">
+            <span>
+              <BiSearchAlt2 style={{ width: 25, height: 25 }} />
             </span>
-          </button>
-        </form>
-      </header>
+          </SearchFormButton>
+        </Form>
+      </HeaderSearchbar>
     );
   }
 }
