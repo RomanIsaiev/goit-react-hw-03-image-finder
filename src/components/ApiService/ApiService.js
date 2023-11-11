@@ -11,7 +11,6 @@ export async function fetchImages(searchQuerry, currentPage) {
       console.log('bad');
       return;
     }
-    console.log(response.data);
     return response.data;
   } catch (error) {
     console.log('problem', error);
