@@ -21,15 +21,13 @@ export class App extends Component {
   componentDidMount() {}
 
   async componentDidUpdate(prevProps, prevState) {
-    console.log(this.state.images);
+    const { page } = this.state;
+
     if (
       this.state.page !== prevState.page ||
       this.state.searchQuery !== prevState.searchQuery
     ) {
-      const { page } = this.state;
-
       fetchImages(this.state.searchQuery, page).then(response => {
-        console.log('load more:', response);
         this.setState(prevState => ({
           images: [...prevState.images, ...response],
           page: prevState.page,
@@ -38,7 +36,7 @@ export class App extends Component {
     }
   }
 
-  nextPage = newPage => {
+  nextPage = () => {
     this.setState(prevState => {
       return {
         page: prevState.page + 1,
@@ -52,7 +50,7 @@ export class App extends Component {
         <Searchbar onSubmit={this.handleFormSubmit} />
         <ToastContainer autoClose={3000} position="top-center" />
         <ImageGallery imagesArray={this.state.images} />
-        <Button nextPage={this.nextPage} />
+        {this.state.images.length > 0 && <Button nextPage={this.nextPage} />}
       </div>
     );
   }
