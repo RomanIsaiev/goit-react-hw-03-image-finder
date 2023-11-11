@@ -18,19 +18,19 @@ export class App extends Component {
     this.setState({ searchQuery });
   };
 
-  async componentDidMount() {
-    // try {
-    //   const initialImages = await fetchImages(
-    //     this.state.searchQuery,
-    //     this.state.page
-    //   );
-    //   this.setState({ images: initialImages });
-    // } catch (error) {
-    //   console.log(error);
+  componentDidMount() {
+    // if (this.state.images.length !== 0) {
+    //   this.setState(prevState => {
+    //     return {
+    //       images: [...(prevState.images + this.state.images)],
+    //     };
+    //   });
     // }
   }
 
   async componentDidUpdate(prevProps, prevState) {
+    console.log(prevProps);
+    console.log(prevState);
     if (
       this.state.page !== prevState.page ||
       this.state.searchQuery !== prevState.searchQuery
@@ -52,11 +52,12 @@ export class App extends Component {
       console.log(newPage);
       console.log('prev page:', prevState);
       console.log(this.state.page);
+      console.log(prevState.images);
+      console.log(this.state.images);
       return {
         page: prevState.page + 1,
       };
     });
-    this.setState();
   };
 
   render() {
