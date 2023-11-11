@@ -56,7 +56,9 @@ export class App extends Component {
       <div>
         <Searchbar onSubmit={this.handleFormSubmit} />
         <ToastContainer autoClose={3000} position="top-center" />
-        <ImageGallery imagesArray={this.state.images} />
+        {this.state.images.length > 0 && (
+          <ImageGallery imagesArray={this.state.images} />
+        )}
         {this.state.loadMore && <Button nextPage={this.nextPage} />}
       </div>
     );
