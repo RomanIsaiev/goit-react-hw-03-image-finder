@@ -23,17 +23,28 @@ export class App extends Component {
   async componentDidUpdate(prevProps, prevState) {
     const { page } = this.state;
 
-    if (
-      this.state.page !== prevState.page ||
-      this.state.searchQuery !== prevState.searchQuery
-    ) {
+    if (this.state.searchQuery !== prevState.searchQuery) {
+      fetchImages(this.state.searchQuery, page).then(response => {
+        this.setState({ images: response });
+      });
+    } else if (this.state.page !== prevState.page) {
       fetchImages(this.state.searchQuery, page).then(response => {
         this.setState(prevState => ({
           images: [...prevState.images, ...response],
-          page: prevState.page,
         }));
       });
     }
+
+    // if (
+    //   this.state.page !== prevState.page ||
+    //   this.state.searchQuery !== prevState.searchQuery
+    // ) {
+    //   fetchImages(this.state.searchQuery, page).then(response => {
+    //     this.setState(prevState => ({
+    //       images: [...prevState.images, ...response],
+    //     }));
+    //   });
+    // }
   }
 
   nextPage = () => {
