@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import { Searchbar } from './Searchbar/Searchbar';
 import { fetchImages } from './ApiService/ApiService';
 import { ImageGallery } from './ImageGallery/ImageGallery';
@@ -21,25 +21,41 @@ export class App extends Component {
 
   componentDidMount() {}
 
-  componentDidUpdate(prevProps, prevState) {
+  async componentDidUpdate(prevProps, prevState) {
     const { page } = this.state;
 
     if (this.state.searchQuery !== prevState.searchQuery) {
-      fetchImages(this.state.searchQuery, page).then(response => {
-        this.setState({
-          images: response.hits,
-          loadMore: true,
+      try {
+        this.setState({ isLoading: true });
+        fetchImages(this.state.searchQuery, page).then(response => {
+          this.setState({
+            images: response.hits,
+            loadMore: true,
+          });
         });
-      });
-    } else if (this.state.page !== prevState.page) {
-      fetchImages(this.state.searchQuery, page).then(response => {
-        this.setState(prevState => ({
-          images: [...prevState.images, ...response.hits],
-        }));
-        if (this.state.page > Math.round(response.totalHits / 12)) {
-          this.setState({ loadMore: false });
-        }
-      });
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.setState({ isLoading: false });
+      }
+    }
+
+    if (this.state.page !== prevState.page) {
+      try {
+        this.setState({ isLoading: true });
+        fetchImages(this.state.searchQuery, page).then(response => {
+          this.setState(prevState => ({
+            images: [...prevState.images, ...response.hits],
+          }));
+          if (this.state.page > Math.round(response.totalHits / 12)) {
+            this.setState({ loadMore: false });
+          }
+        });
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.setState({ isLoading: false });
+      }
     }
   }
 
@@ -59,6 +75,7 @@ export class App extends Component {
         {this.state.images.length > 0 && (
           <ImageGallery imagesArray={this.state.images} />
         )}
+        {this.state.isLoading && <b>LOADING...</b>}
         {this.state.loadMore && <Button nextPage={this.nextPage} />}
       </div>
     );

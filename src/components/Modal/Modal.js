@@ -1,4 +1,3 @@
-import { Component } from 'react';
 import ReactModal from 'react-modal';
 
 const customStyles = {

@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import { BiSearchAlt2 } from 'react-icons/bi';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 export class Searchbar extends Component {
