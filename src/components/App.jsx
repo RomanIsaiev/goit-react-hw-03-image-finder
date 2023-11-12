@@ -21,7 +21,11 @@ export class App extends Component {
   };
 
   handleFormSubmit = searchQuery => {
-    this.setState({ query: searchQuery, page: 1, images: [] });
+    this.setState({
+      query: `${Date.now()}/${searchQuery}`,
+      page: 1,
+      images: [],
+    });
   };
 
   async componentDidUpdate(prevProps, prevState) {
@@ -34,7 +38,13 @@ export class App extends Component {
           isLoading: true,
           loadMore: false,
         });
-        await fetchImages(this.state.query, this.state.page).then(response => {
+        await fetchImages(
+          this.state.query.slice(14, this.state.query.length),
+          this.state.page
+        ).then(response => {
+          if (response.total === 0) {
+            return;
+          }
           this.setState(prevState => ({
             images: [...prevState.images, ...response.hits],
             loadMore: true,
