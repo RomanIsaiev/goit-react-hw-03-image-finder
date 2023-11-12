@@ -13,7 +13,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 export class App extends Component {
   state = {
-    searchQuery: '',
+    query: '',
     images: [],
     page: 1,
     loadMore: false,
@@ -21,50 +21,30 @@ export class App extends Component {
   };
 
   handleFormSubmit = searchQuery => {
-    this.setState({ searchQuery });
+    this.setState({ query: searchQuery, page: 1, images: [] });
   };
 
-  componentDidMount() {}
-
   async componentDidUpdate(prevProps, prevState) {
-    const { page } = this.state;
-    console.log(this.state.page);
-    console.log(this.state.images);
-
-    if (this.state.searchQuery !== prevState.searchQuery) {
+    if (
+      this.state.page !== prevState.page ||
+      this.state.query !== prevState.query
+    ) {
       try {
         this.setState({
-          images: [],
           isLoading: true,
           loadMore: false,
         });
-        await fetchImages(this.state.searchQuery, page).then(response => {
-          this.setState({
-            images: response.hits,
-            loadMore: true,
-          });
-        });
-      } catch (error) {
-        toast.error('Sorry, no pictures were found for this request');
-      } finally {
-        this.setState({ isLoading: false });
-      }
-    }
-
-    if (this.state.page !== prevState.page) {
-      console.log('я тоже работаю', Date());
-      try {
-        this.setState({ isLoading: true });
-        await fetchImages(this.state.searchQuery, page).then(response => {
+        await fetchImages(this.state.query, this.state.page).then(response => {
           this.setState(prevState => ({
             images: [...prevState.images, ...response.hits],
+            loadMore: true,
           }));
           if (this.state.page > Math.round(response.totalHits / 12)) {
             this.setState({ loadMore: false });
           }
         });
       } catch (error) {
-        toast.error('Error');
+        toast.error('Sorry, no pictures were found for this request');
       } finally {
         this.setState({ isLoading: false });
       }
